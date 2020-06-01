@@ -4,6 +4,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -11,9 +13,12 @@ import sample.Metods.ActionChain;
 import sample.Metods.Player;
 
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
+    public Label balans;
+    public Label name;
     ActionChain action = null;
     @FXML
     ImageView view;
@@ -21,17 +26,27 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        TextInputDialog logname = new TextInputDialog();
+        logname.setTitle("Логин");
+        logname.setHeaderText("Введите свое имя");
+        name.setText(logname.showAndWait().get());
+        balans.setText(3+"");
+        player1 = new Player(logname.showAndWait().get(), 3);
+        action = new ActionChain();
         view.setImage(new Image("монетка.png"));
         view.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (action == null) return;
+            if (action == null){
+                return;}
             if (action.process()) {
                 init();
+                balans.setText(player1.getNumber()+1+"");
             }
             else action = null;
         });
     }
     public void onPay(ActionEvent actionEvent) {
         player1.addNumber(1);
+        balans.setText(player1.getNumber()+1+"");
     }
 
 
@@ -42,12 +57,12 @@ public class Controller implements Initializable {
     }
 
     public boolean init(){
-        if(! player1.pay(1)) {
+        if(!player1.pay(1)) {
+            balans.setText(0+"");
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setHeaderText("Средств на счете недостаточно, еще монетку плисс!");
             alert.show();
-            action=null;
-            view.setImage(new Image("монетка.jpg"));
+            view.setImage(new Image("монетка.png"));
             return false;
         }
         else return true;

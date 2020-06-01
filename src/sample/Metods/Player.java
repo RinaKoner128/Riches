@@ -13,6 +13,10 @@ public class Player {
         count = 0;
     }
 
+    public Integer getNumber() {
+        return number;
+    }
+
     public boolean pay(Integer number) {
         if (number <= this.number) {
             this.number -= number;
